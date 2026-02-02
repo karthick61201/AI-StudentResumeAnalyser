@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Student Resume Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">📄 Resume Analyzer</h1>
+                <p class="tagline">AI-Powered Resume Analysis for Students</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="upload-container">
+                    <h2>Upload Your Resume</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <h3>Drag & Drop your resume</h3>
+                        <p>or click to browse</p>
+                        <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt" hidden>
+                    </div>
+                    <div id="fileInfo" class="file-info" style="display: none;">
+                        <p id="fileName"></p>
+                        <button class="btn-remove" onclick="clearFile()">✕ Remove</button>
+                    </div>
+                    <button class="btn-primary" id="analyzeBtn" style="display: none;">Analyze Resume</button>
+                    <div class="file-types">
+                        <p><strong>Accepted formats:</strong> PDF, DOC, DOCX, TXT</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                <div class="spinner"></div>
+                <p>Analyzing your resume...</p>
+            </div>
+
+            <!-- Analysis Results Section -->
+            <section id="resultsSection" class="results-section" style="display: none;">
+                <div class="results-container">
+                    <h2>Analysis Results</h2>
+                    
+                    <!-- Overall Score -->
+                    <div class="score-card">
+                        <div class="score-display">
+                            <div class="score-circle">
+                                <div class="score-value" id="overallScore">0</div>
+                                <p>Overall Score</p>
+                            </div>
+                        </div>
+                        <p id="scoreMessage" class="score-message"></p>
+                    </div>
+
+                    <!-- Category Scores -->
+                    <div class="categories-grid">
+                        <div class="category-card">
+                            <h4>Formatting</h4>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="formattingProgress"></div>
+                            </div>
+                            <p class="score-text" id="formattingScore">0%</p>
+                        </div>
+                        <div class="category-card">
+                            <h4>Content</h4>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="contentProgress"></div>
+                            </div>
+                            <p class="score-text" id="contentScore">0%</p>
+                        </div>
+                        <div class="category-card">
+                            <h4>Experience</h4>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="experienceProgress"></div>
+                            </div>
+                            <p class="score-text" id="experienceScore">0%</p>
+                        </div>
+                        <div class="category-card">
+                            <h4>Skills</h4>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="skillsProgress"></div>
+                            </div>
+                            <p class="score-text" id="skillsScore">0%</p>
+                        </div>
+                    </div>
+
+                    <!-- Extracted Information -->
+                    <div class="info-sections">
+                        <div class="info-card">
+                            <h4>📋 Extracted Information</h4>
+                            <div id="extractedInfo">
+                                <p><strong>Name:</strong> <span id="nameExtracted">N/A</span></p>
+                                <p><strong>Email:</strong> <span id="emailExtracted">N/A</span></p>
+                                <p><strong>Phone:</strong> <span id="phoneExtracted">N/A</span></p>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>✅ Strengths</h4>
+                            <ul id="strengthsList" class="list-items">
+                                <li>Professional layout</li>
+                                <li>Clear section structure</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>⚠️ Weaknesses</h4>
+                            <ul id="weaknessesList" class="list-items">
+                                <li>Missing key information</li>
+                                <li>Limited skill descriptions</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>💡 Recommendations</h4>
+                            <ul id="recommendationsList" class="list-items">
+                                <li>Add more quantifiable achievements</li>
+                                <li>Include relevant keywords for ATS</li>
+                                <li>Highlight technical skills</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Skills Analysis -->
+                    <div class="info-card">
+                        <h4>🔧 Skills Detected</h4>
+                        <div id="skillsTag" class="tags-container">
+                            <span class="tag">Loading skills...</span>
+                        </div>
+                    </div>
+
+                    <!-- ATS Compatibility -->
+                    <div class="info-card ats-card">
+                        <h4>🤖 ATS Compatibility</h4>
+                        <p id="atsScore" class="ats-score"></p>
+                        <p id="atsTips" class="ats-tips"></p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="btn-primary" onclick="downloadReport()">📥 Download Report</button>
+                        <button class="btn-secondary" onclick="startOver()">↻ Analyze Another Resume</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message" style="display: none;">
+                <p id="errorText"></p>
+                <button class="btn-close" onclick="clearError()">✕</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 AI Student Resume Analyzer | Helping students craft better resumes</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
